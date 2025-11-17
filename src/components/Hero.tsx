@@ -4,16 +4,16 @@ import heroImage from "@/assets/hero-technician.jpg";
 
 const Hero = () => {
   const handleCall = () => {
-    window.location.href = "tel:+491234567890";
+    window.location.href = "tel:+4974719429413";
   };
 
   const handleCallback = () => {
-    // Scroll to form or open callback modal
-    document.getElementById("contact-form")?.scrollIntoView({ behavior: "smooth" });
+    // Scroll to form
+    document.getElementById("inquiry-form")?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleWhatsApp = () => {
-    window.open("https://wa.me/491234567890?text=Hallo, ich benötige eine Ersatzpumpe", "_blank");
+    window.open("https://wa.me/4974719429413?text=Heizungspumpe%20defekt%20–%20bitte%20um%20Rückruf", "_blank");
   };
 
   return (

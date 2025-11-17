@@ -2,6 +2,10 @@ import { Phone, Mail, MessageCircle, MapPin, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Footer = () => {
+  const handleScrollToForm = () => {
+    document.getElementById("inquiry-form")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <footer className="w-full">
       {/* Pre-Footer Notfallleiste */}
@@ -18,11 +22,15 @@ const Footer = () => {
               <div className="flex flex-col sm:flex-row gap-3 text-foreground">
                 <div className="flex items-center gap-2">
                   <Phone className="w-5 h-5 text-accent" />
-                  <span className="font-semibold text-lg">07471 / 9429450</span>
+                  <a href="tel:+4974719429413" className="font-semibold text-lg hover:text-accent transition-colors">
+                    07471 / 9429413
+                  </a>
                 </div>
                 <div className="flex items-center gap-2">
                   <Mail className="w-5 h-5 text-accent" />
-                  <span>info@solarics.de</span>
+                  <a href="mailto:info@solarics.de" className="hover:text-accent transition-colors">
+                    info@solarics.de
+                  </a>
                 </div>
                 <div className="flex items-center gap-2">
                   <MessageCircle className="w-5 h-5 text-accent" />
@@ -35,7 +43,7 @@ const Footer = () => {
                 variant="destructive" 
                 size="lg"
                 className="w-full sm:w-auto"
-                onClick={() => window.location.href = 'tel:074719429450'}
+                onClick={() => window.location.href = 'tel:+4974719429413'}
               >
                 <Phone className="w-5 h-5 mr-2" />
                 Jetzt anrufen
@@ -44,7 +52,7 @@ const Footer = () => {
                 variant="outline" 
                 size="lg"
                 className="w-full sm:w-auto"
-                onClick={() => window.open('https://wa.me/49747194294500', '_blank')}
+                onClick={() => window.open('https://wa.me/4974719429413?text=Heizungspumpe%20defekt%20–%20bitte%20um%20Rückruf', '_blank')}
               >
                 <MessageCircle className="w-5 h-5 mr-2" />
                 WhatsApp öffnen
@@ -97,8 +105,8 @@ const Footer = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="w-4 h-4 flex-shrink-0" />
-                  <a href="tel:074719429450" className="hover:text-accent transition-colors">
-                    07471 / 9429450
+                  <a href="tel:+4974719429413" className="hover:text-accent transition-colors">
+                    07471 / 9429413
                   </a>
                 </div>
                 <div className="flex items-center gap-2">
@@ -129,9 +137,9 @@ const Footer = () => {
               <h3 className="text-lg font-bold">Service & Infos</h3>
               <ul className="space-y-2 text-sm text-primary-foreground/80">
                 <li>
-                  <a href="#contact" className="hover:text-accent transition-colors">
+                  <button onClick={handleScrollToForm} className="hover:text-accent transition-colors">
                     Ersatzpumpe anfragen
-                  </a>
+                  </button>
                 </li>
                 <li>
                   <a href="#situations" className="hover:text-accent transition-colors">

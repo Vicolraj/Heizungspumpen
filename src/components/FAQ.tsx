@@ -4,6 +4,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 const faqData = [
   {
@@ -51,41 +53,4 @@ const faqData = [
     answer: "Über unser Netzwerk können wir Ihnen je nach Region Partnerbetriebe empfehlen, die den Einbau und die Inbetriebnahme übernehmen. Sprechen Sie uns einfach im Formular oder am Telefon darauf an."
   }
 ];
-
-const FAQ = () => {
-  return (
-    <section className="py-16 md:py-24 bg-background">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            FAQ – Häufige Fragen zur Ersatz-Heizungspumpe
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Hier finden Sie Antworten auf die wichtigsten Fragen rund um Ersatzpumpen, Lieferung und Service.
-          </p>
-        </div>
-
-        <div className="bg-card rounded-lg border border-border shadow-sm p-6 md:p-8">
-          <Accordion type="single" collapsible className="w-full space-y-4">
-            {faqData.map((faq, index) => (
-              <AccordionItem 
-                key={index} 
-                value={`item-${index}`}
-                className="border-b border-border last:border-b-0 pb-4 last:pb-0"
-              >
-                <AccordionTrigger className="text-left font-semibold text-foreground hover:text-primary text-base md:text-lg py-4 hover:no-underline">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground leading-relaxed pt-2 pb-4">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </div>
-    </section>
-  );
-};
-
 export default FAQ;

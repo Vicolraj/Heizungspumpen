@@ -7,8 +7,8 @@ import technicianImage from "@/assets/situation-technician.jpg";
 
 const ProblemSelection = () => {
   const handleRequest = (type: string) => {
-    // Scroll to contact form
-    document.getElementById("contact-form")?.scrollIntoView({ behavior: "smooth" });
+    // Scroll to inquiry form
+    document.getElementById("inquiry-form")?.scrollIntoView({ behavior: "smooth" });
   };
 
   const cards = [

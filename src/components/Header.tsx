@@ -69,7 +69,7 @@ const Header = () => {
           <div className="flex items-center gap-2 md:gap-3">
             {/* WhatsApp Button */}
             <a 
-              href="https://wa.me/4974719429450?text=Hallo, ich benötige eine Ersatzpumpe"
+              href="https://wa.me/4974719429413?text=Heizungspumpe%20defekt%20–%20bitte%20um%20Rückruf"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:flex items-center gap-2 bg-trust-foreground hover:bg-trust-foreground/90 text-white px-3 md:px-4 py-2 rounded-lg transition-all hover:scale-105 shadow-md text-sm font-semibold"
@@ -81,13 +81,13 @@ const Header = () => {
 
             {/* Phone Button */}
             <a 
-              href="tel:+4974719429450"
+              href="tel:+4974719429413"
               className="flex items-center gap-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground px-3 md:px-5 py-2 md:py-2.5 rounded-lg transition-all hover:scale-105 shadow-md"
             >
               <Phone className="w-4 h-4 md:w-5 md:h-5" />
               <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
                 <span className="text-xs sm:text-sm md:text-base font-semibold">Jetzt anrufen</span>
-                <span className="hidden sm:inline text-sm md:text-base font-semibold">07471-9429450</span>
+                <span className="hidden sm:inline text-sm md:text-base font-semibold">07471-9429413</span>
               </div>
             </a>
           </div>
