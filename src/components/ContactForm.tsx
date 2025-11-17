@@ -67,7 +67,7 @@ const ContactForm = () => {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
-      // Prepare email content
+      // Build email content with all form data
       const emailContent = `
 NEUE ANFRAGE ZUR HEIZUNGSPUMPENERSATZ
 =====================================
@@ -107,39 +107,28 @@ ${data.message}
 Formular eingereicht am: ${new Date().toLocaleString("de-DE")}
 `;
 
-      // Send email via fetch to a backend endpoint or use a service like Resend
-      // For now, we'll simulate a successful submission
-      const response = await fetch("/api/send-inquiry", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          to: "info@solarics.de",
-          subject: `Neue Anfrage zur Heizungspumpenersatz - ${data.nameCompany}`,
-          content: emailContent,
-          formData: data,
-        }),
-      }).catch(() => {
-        // If API endpoint doesn't exist, we'll still show success
-        // In production, set up a proper backend endpoint
-        return null;
-      });
+      // Create mailto link with encoded subject and body
+      const subject = `Neue Anfrage zur Heizungspumpenersatz - ${data.nameCompany}`;
+      const mailtoLink = `mailto:info@solarics.de?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailContent)}`;
 
-      // Show success message regardless (since backend might not be set up yet)
+      // Open user's mail client with prefilled email
+      window.location.href = mailtoLink;
+
+      // Show success message
       setShowSuccess(true);
-      toast.success("Anfrage erfolgreich gesendet!", {
-        description: "Wir melden uns in Kürze bei Ihnen unter der angegebenen Telefonnummer oder E-Mail.",
+      toast.success("Anfrage wird geöffnet!", {
+        description: "Ihr Mail-Client wird mit Ihrer Anfrage geöffnet. Bitte überprüfen und senden Sie die E-Mail ab.",
       });
 
       form.reset();
       
-      // Hide success message after 8 seconds and scroll to top
+      // Hide success message after 8 seconds
       setTimeout(() => {
         setShowSuccess(false);
-        window.scrollTo({ top: 0, behavior: "smooth" });
       }, 8000);
     } catch (error) {
-      toast.error("Fehler beim Senden", {
-        description: "Bitte versuchen Sie es erneut oder rufen Sie uns an.",
+      toast.error("Fehler beim Öffnen", {
+        description: "Bitte versuchen Sie es erneut oder rufen Sie uns direkt an.",
       });
     } finally {
       setIsSubmitting(false);
