@@ -34,6 +34,7 @@ const ContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -57,8 +58,8 @@ const ContactForm = () => {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // In a production app, you would upload this file to a server or storage service
-      // For now, we'll just store the filename
+      // Store the file object and filename for Formspree multipart upload
+      setFile(file);
       form.setValue("fileUrl", file.name);
       toast.success(`Datei "${file.name}" hinzugefügt`);
     }
@@ -67,68 +68,58 @@ const ContactForm = () => {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
-      // Build email content with all form data
-      const emailContent = `
-NEUE ANFRAGE ZUR HEIZUNGSPUMPENERSATZ
-=====================================
+      // Prepare multipart form data for Formspree
+      const formDataPayload = new FormData();
+      formDataPayload.append('nameCompany', data.nameCompany);
+      formDataPayload.append('email', data.email);
+      formDataPayload.append('phone', data.phone);
+      formDataPayload.append('zipCity', data.zipCity);
+      formDataPayload.append('customerType', data.customerType);
+      formDataPayload.append('manufacturer', data.manufacturer);
+      formDataPayload.append('pumpModel', data.pumpModel || '');
+      formDataPayload.append('pumpYear', data.pumpYear || '');
+      formDataPayload.append('urgency', data.urgency);
+      formDataPayload.append('wantCallback', data.wantCallback ? 'Ja' : 'Nein');
+      formDataPayload.append('wantEnergyAlternative', data.wantEnergyAlternative ? 'Ja' : 'Nein');
+      formDataPayload.append('message', data.message);
+      formDataPayload.append('submittedAt', new Date().toISOString());
 
-PERSÖNLICHE DATEN:
-------------------
-Name/Firma: ${data.nameCompany}
-E-Mail: ${data.email}
-Telefon: ${data.phone}
-PLZ/Stadt: ${data.zipCity}
+      if (file) {
+        // Formspree accepts file attachments via multipart form posts
+        formDataPayload.append('attachment', file, file.name);
+      }
 
-KUNDENKATEGORIE:
-----------------
-${data.customerType === "privat" ? "Privatkunde" : data.customerType === "gewerbe" ? "Hausverwaltung/Gewerbe" : "Installateur/Handwerker"}
-
-PUMPENDETAILS:
---------------
-Hersteller: ${data.manufacturer}
-Modell/Typ: ${data.pumpModel || "Nicht angegeben"}
-Baujahr: ${data.pumpYear || "Nicht angegeben"}
-Fotodatei: ${data.fileUrl || "Keine Datei hochgeladen"}
-
-DRINGLICHKEIT:
---------------
-${data.urgency === "today" ? "Sehr dringend (heute/morgen)" : data.urgency === "48h" ? "Innerhalb 48 Stunden" : "In den nächsten Tagen"}
-
-ZUSÄTZE:
---------
-Rückruf gewünscht: ${data.wantCallback ? "Ja" : "Nein"}
-Energieeffiziente Alternative: ${data.wantEnergyAlternative ? "Ja" : "Nein"}
-
-NACHRICHT/PROBLEMBESCHREIBUNG:
-------------------------------
-${data.message}
-
-=====================================
-Formular eingereicht am: ${new Date().toLocaleString("de-DE")}
-`;
-
-      // Create mailto link with encoded subject and body
-      const subject = `Neue Anfrage zur Heizungspumpenersatz - ${data.nameCompany}`;
-      const mailtoLink = `mailto:info@solarics.de?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailContent)}`;
-
-      // Open user's mail client with prefilled email
-      window.location.href = mailtoLink;
-
-      // Show success message
-      setShowSuccess(true);
-      toast.success("Anfrage wird geöffnet!", {
-        description: "Ihr Mail-Client wird mit Ihrer Anfrage geöffnet. Bitte überprüfen und senden Sie die E-Mail ab.",
+      // POST to Formspree endpoint
+      const resp = await fetch('https://formspree.io/f/mldzdeop', {
+        method: 'POST',
+        body: formDataPayload,
+        headers: {
+          Accept: 'application/json',
+        },
       });
 
-      form.reset();
-      
-      // Hide success message after 8 seconds
-      setTimeout(() => {
-        setShowSuccess(false);
-      }, 8000);
-    } catch (error) {
-      toast.error("Fehler beim Öffnen", {
-        description: "Bitte versuchen Sie es erneut oder rufen Sie uns direkt an.",
+      const result = await resp.json().catch(() => null);
+
+      if (resp.ok) {
+        setShowSuccess(true);
+        toast.success('Anfrage erfolgreich gesendet!', {
+          description: 'Wir haben Ihre Anfrage erhalten und melden uns schnellstmöglich bei Ihnen.',
+        });
+        form.reset();
+        setFile(null);
+      } else {
+        console.error('Formspree error', result);
+        toast.error('Fehler beim Senden', {
+          description: result && result.error ? result.error : 'Beim Senden der Anfrage ist ein Fehler aufgetreten. Bitte versuchen Sie es später oder rufen Sie uns an.',
+        });
+      }
+
+      // hide success after a while
+      setTimeout(() => setShowSuccess(false), 8000);
+    } catch (err) {
+      console.error(err);
+      toast.error('Fehler beim Senden', {
+        description: 'Bitte versuchen Sie es erneut oder rufen Sie uns an.',
       });
     } finally {
       setIsSubmitting(false);
